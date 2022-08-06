@@ -1,7 +1,9 @@
+#![warn(clippy::all, clippy::pedantic)]
 use std::fs;
 use std::env;
 use std::cmp::Ordering;
-
+// TODO: intro clap crate
+// TODO: add a output flag
 fn files_to_org(it: fs::ReadDir, level: u16) {
     for entry in it {
         let mut dirs: Vec<fs::DirEntry> = Vec::new();
@@ -26,16 +28,16 @@ fn files_to_org(it: fs::ReadDir, level: u16) {
 fn main() {
     let args: Vec<String> = env::args().collect();
     match args.len().cmp(&2) {
-	Ordering::Less => {
+	Ordering::Less | Ordering::Greater  => {
 	    println!("ERROR: provide a one dir path");
 	    std::process::exit(1);
 	},
-	Ordering::Greater => {
-	    println!("ERROR: provide a one dir path");
-	    std::process::exit(1);
-	},
+	// Ordering::Greater => {
+	//     println!("ERROR: provide a one dir path");
+	//     std::process::exit(1);
+	// },
 	Ordering::Equal => {
-	    let dir = fs::read_dir(args[1].to_string()).unwrap();
+	    let dir = fs::read_dir(&args[1]).unwrap();
 	    files_to_org(dir, 1);
 	}
     }
